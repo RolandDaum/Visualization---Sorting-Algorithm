@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualization - Sorting Algorithm</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1 id="title">Visualization - Sorting Algorithm</h1>
+    <div id="div_input">
+        <button class="button" onclick="randomize()" id="input_randomize">Randomize</button>
+        <div class="div_slider">
+            <h2>Amout of Bars <span id="input_bars_value"> [10]</span></h2>
+            <input type="range" min="10" max="100" value="10" class="slider" id="input_bars">
+        </div>
+        <div class="div_slider">
+            <h2>Sorting Speed <span id="input_sortspeed_value">[5]</span></h2>
+            <input type="range" min="1" max="10" value="5" class="slider" id="input_sortspeed">
+        </div>
+        <button class="button" onclick="sortbars()" id="input_sort">Sort</button>
+    </div>
+    <div id="div_bar">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+</body>
+<script src="./app.js"></script>
+
+</html>
