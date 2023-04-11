@@ -51,33 +51,27 @@ async function sortbars() {
                               
                 stillsonthingbigger = true
 
+                playFreq(20*i, 0.005)
+
                 document.getElementsByClassName("bar")[i].style.background = "red"
-                await sleep(0.1 * Math.pow(document.getElementById("input_sortspeed").value, 2));
+                await sleep((11 - document.getElementById("input_sortspeed").value) ** 2);
                 document.getElementsByClassName("bar")[i].style.background = ""
 
             }
-            // setInterval(function(i) {
-            //     if (parseInt(document.getElementsByClassName("bar")[i].style.height) > parseInt(document.getElementsByClassName("bar")[i+1].style.height)) {
-
-            //         document.getElementById("div_bar").insertBefore(document.getElementsByClassName("bar")[i+1], document.getElementsByClassName("bar")[i])
-                                  
-            //         stillsonthingbigger = true
-            //     }
-            // }, (document.getElementById("input_sortspeed").value*100), i)
-
-            // setTimeout(function(i) {
-            //     if (parseInt(document.getElementsByClassName("bar")[i].style.height) > parseInt(document.getElementsByClassName("bar")[i+1].style.height)) {
-
-            //         document.getElementById("div_bar").insertBefore(document.getElementsByClassName("bar")[i+1], document.getElementsByClassName("bar")[i])
-                                  
-            //         stillsonthingbigger = true
-            //     }
-            // }, 100*i, i)
         }
     }
 }
 
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const audioCtx = new AudioContext();
+function playFreq(freq, duration) {
+  const oscillator = audioCtx.createOscillator();
+  oscillator.type = "sine";
+  oscillator.frequency.value = freq;
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + duration);
 }
