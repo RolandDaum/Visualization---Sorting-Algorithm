@@ -66,12 +66,12 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const audioCtx = new AudioContext();
-function playFreq(freq, duration) {
-  const oscillator = audioCtx.createOscillator();
-  oscillator.type = "sine";
-  oscillator.frequency.value = freq;
-  oscillator.connect(audioCtx.destination);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime + duration);
-}
+// const audioCtx = new AudioContext();
+// function playFreq(freq, duration) {
+//   const oscillator = audioCtx.createOscillator();
+//   oscillator.type = "sine";
+//   oscillator.frequency.value = freq;
+//   oscillator.connect(audioCtx.destination);
+//   oscillator.start();
+//   oscillator.stop(audioCtx.currentTime + duration);
+// }
