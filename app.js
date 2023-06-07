@@ -51,7 +51,7 @@ async function sortbars() {
                               
                 stillsonthingbigger = true
 
-                playFreq(20*i, 0.005)
+//                 playFreq(20*i, 0.005)
 
                 document.getElementsByClassName("bar")[i].style.background = "red"
                 await sleep((11 - document.getElementById("input_sortspeed").value) ** 2);
