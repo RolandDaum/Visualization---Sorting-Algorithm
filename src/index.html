@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/dist/output.css">
+    <link rel="shortcut icon" href="./assets/icon.svg" type="image/x-icon">
+    <script type="module" src="./app.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+
+<body class="bg-background-default h-screen w-screen m-0 p-0 font-Goldman flex items-center max-lg:h-fit">
+
+    <div class="flex flex-row items-center absolute top-5 left-5">
+        <img src="./assets/icon.svg" class="aspect-square h-8">
+        <h1 class="text-text-default text-2xl font-Goldman ml-5 font-bold">Visual Sorting Algorithm</h1>
+    </div>
+
+    <div class="w-screen flex flex-row items-center h-[80vh] max-lg:flex-col max-lg:h-fit max-lg:mt-24">
+        <div class="flex flex-col items-center justify-between border-r-2 border-r-primary-default px-16 h-full max-lg:h-min max-lg:border-none">
+            <div class="w-[225px]">
+                <select id="sortSelect" class="bg-primary-default active:outline-none text-center py-3 rounded-md text-xl font-bold w-full my-5 h-12">
+                    <option disabled selected>Algorithm</option>
+                    <option disabled>Quicksort</option>
+                    <option>Bubblesort V.1</option>
+                    <option>Bubblesort V.2</option>
+                    <option disabled>Merge sort</option>
+                </select>
+                <div class="my-5 w-full">
+                    <h2 class="text-text-default text-xl my-3"><span id="spanbarnum">10</span> Bars</h2>
+                    <input id="BarNumberSlider" type="range" min="10" max="250" value="10" class="slider bg-text-default">
+                </div>
+                <div class="my-5 w-full">
+                    <h2 class="text-text-default text-xl my-3"><span id="spanspeed">25</span>ms delay</h2>
+                    <input id="SortSpeedSlider" type="range" min="1" max="25" value="25" class="slider bg-text-default">
+                </div>
+                <!-- <div class="my-5 w-full">
+                    <h2 class="text-text-default text-xl my-3">Download Data</h2>
+                    <button class=" bg-primary-default rounded-md active:translate-y-1 w-full h-12 flex justify-center items-center">
+                        <img src="./assets/download.svg" class=""> 
+                    </button>
+                </div> -->
+            </div>
+            <div class="h-12 w-[225px] flex flex-row justify-between items-center my-5">
+                <button id="sort" class="bg-secondary-default rounded-md w-full h-full mr-10 active:translate-y-1 text-xl text-black font-bold">Sort</button>
+                <button id="shuffel" class="bg-secondary-default rounded-md aspect-square h-full active:translate-y-1 flex justify-center items-center">
+                    <img src="./assets/shuffel.svg" class="aspect-square h-7">
+                </button>
+            </div>
+        </div>
+        <div class="h-full w-full px-16 max-lg:px-2 flex flex-col justify-start items-center max-lg:h-[75vh]">
+            <h1 id="algName" class="text-text-default my-5 text-2xl max-lg:hidden">[Algorithm]</h1>
+            <div id="bar_div" class="flex flex-row justify-evenly items-baseline w-full h-full max-lg:mt-5"></div>
+        </div>
+    </div>
+
+</body>
+</html>
