@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     ArrayBar()
 });
 
-
 // UI function for the slider
 function UI_slider() {
     document.querySelectorAll('.slider').forEach(element => {
@@ -99,10 +98,14 @@ function AEL_sort() {
         else if(ID_sortselect.value === 'Bubblesort V.2') {
             VS_SORT_bubblesortV2()
         }
+        else if (ID_sortselect.value === 'Quicksort') {
+            VS_SORT_quicksort()
+        }
     })
 }
 
 // Bubble Sort
+//real
 async function VS_SORT_bubblesortV1() {
     var somethingChanged = true
     while (somethingChanged) {
@@ -123,6 +126,7 @@ async function VS_SORT_bubblesortV1() {
         }
     }
 }
+//fake
 async function VS_SORT_bubblesortV2() {
     var somethingChanged = true
     while (somethingChanged) {
@@ -145,11 +149,84 @@ async function VS_SORT_bubblesortV2() {
     }
 }
 
+async function VS_SORT_quicksort() {
+    await compare(0,dataArray.length)
+}
+
+async function compare(x,y) { 
+    let l = x
+    let r = y
+    // Durch die neuen Grenzen wird irgendwie nie 1 erreicht, wodurch das ganze bereits in der ersten kleinsten recrusiven aufrufung in einer infinity schleife stuck ist
+    // console.log(`Y: ${y}, X: ${x} = ` + (y-x))
+    if ((y - x) <= 1) {
+        return;
+    }
+    else {
+        let middleIndex = findMiddleIndexValue(x, y)
+        let middleIndexValue = dataArray[middleIndex]
+        dataArray.splice(y + 1, 0, parseInt(dataArray.splice(middleIndex, 1)));
+        for (let i = 0; i < (y-x); i++) {
+            if (l >= r) {
+                break
+            }
+            if (dataArray[l] > middleIndexValue) {
+                dataArray.splice(y + 1, 0, parseInt(dataArray.splice(l, 1)));
+                l--
+            }
+            if (dataArray[r] < middleIndexValue) {
+                dataArray.splice(x, 0, parseInt(dataArray.splice(r, 1)));
+                r++
+            }
+
+            // document.getElementsByClassName('bar')[l].classList.add('bar_active')
+            // document.getElementsByClassName('bar')[r].classList.add('bar_active')
+
+            await sleep(10*ID_sortspeedslider.value)
+
+            // document.getElementsByClassName('bar')[l].classList.remove('bar_active')
+            // document.getElementsByClassName('bar')[r].classList.remove('bar_active')
+
+            ArrayBar();
+
+            l++
+            r--
+        }
+        // compare(x,Math.floor((y-x)/2)-1)
+        // compare(Math.floor((y-x)/2)-1,y)
+
+        
+    }
+}
+function findMiddleIndexValue(x,y) {
+    let middle = null
+    let l = x
+    let r = y
+    for (let i = 0; i < (y-x); i++) {
+        middle = middle + dataArray[l]
+        l++
+    }
+    middle = middle/(y-x)
+
+    l = x
+    r = y
+    let middleIndex = l
+    for (let i = 0; i < (y-x); i++) {
+        if (Math.sqrt((middle - dataArray[l])**2) < Math.sqrt((middle - dataArray[middleIndex])**2)) {
+            middleIndex = l
+        }
+        l++
+    }
+
+    return middleIndex
+}
+
+
 function SORT_swap(x,y) {
     let tmp = dataArray[y]
     dataArray[y] = dataArray[x]
     dataArray[x] = tmp
 }
+
 
 // Just works in async func called with await
 function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
