@@ -23,12 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
     ArrayBar()
 });
 
-
 // UI function for the slider
 function UI_slider() {
     document.querySelectorAll('.slider').forEach(element => {
         element.addEventListener('input', function() {
-            runSort = false
             element.style.background = 'linear-gradient(to right, #EFC9A4 0%, #EFC9A4 ' + (91.1111111111/this.max*this.value) + '%, #B0B4B7 ' + (91.1111111111/this.max*this.value) + '%, #B0B4B7 100%)';
         });
         element.style.background = 'linear-gradient(to right, #EFC9A4 0%, #EFC9A4 ' + (91.1111111111/element.max*element.value) + '%, #B0B4B7 ' + (91.1111111111/element.max*element.value) + '%, #B0B4B7 100%)';
@@ -37,6 +35,7 @@ function UI_slider() {
 // Assigning the Eventlistener to the Bar Number Slider
 function AEL_barnumberslider() {
     ID_barnumberslider.addEventListener("change", () => {
+        runSort = false
         ID_spanbarnum.innerHTML = ID_barnumberslider.value
         dataArray = []
         for (let i=0; i < ID_barnumberslider.value; i++) {
@@ -93,63 +92,104 @@ function AEL_shuffelArray() {
 function AEL_sort() {
     ID_sortbutton.addEventListener('click', () => {
         runSort = true
-        if (ID_sortselect.value === 'Bubblesort V.1') {
-            VS_SORT_bubblesortV1()
+        if (ID_sortselect.value === 'Bubblesort') {
+            VS_SORT_bubblesort()
         }
-        else if(ID_sortselect.value === 'Bubblesort V.2') {
-            VS_SORT_bubblesortV2()
+        else if (ID_sortselect.value === 'Quicksort') {
+            VS_SORT_quicksort()
         }
     })
 }
 
 // Bubble Sort
-async function VS_SORT_bubblesortV1() {
+async function VS_SORT_bubblesort() {
     var somethingChanged = true
     while (somethingChanged) {
         somethingChanged = false
         for (let i = 0; i < dataArray.length; i++) {
             if (dataArray[i] > dataArray[i+1]) {
+
+                // Visual - rot, wenn das danach kleiner als das davor ist
+                ArrayBar()
+                document.getElementsByClassName('bar')[i].classList.add('bar_active2')
+                document.getElementsByClassName('bar')[i+1].classList.add('bar_active2')
+                await sleep(10*ID_sortspeedslider.value)
+                document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
+                document.getElementsByClassName('bar')[i+1].classList.remove('bar_active2')
+
                 SORT_swap(i,i+1)
                 somethingChanged = true
-            }
 
+                // Visual, wenn fertig getauscht wurde
+                ArrayBar()
+                document.getElementsByClassName('bar')[i].classList.add('bar_active2')
+                document.getElementsByClassName('bar')[i+1].classList.add('bar_active2')
+                await sleep(10*ID_sortspeedslider.value)
+                document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
+                document.getElementsByClassName('bar')[i+1].classList.remove('bar_active2')
+            }
             if (!runSort) {
                 break;
             }
+
+            // Visual - blau für jeden normalen schritt
+            ArrayBar();
             document.getElementsByClassName('bar')[i].classList.add('bar_active')
             await sleep(10*ID_sortspeedslider.value)
             document.getElementsByClassName('bar')[i].classList.remove('bar_active')
-            ArrayBar();
         }
     }
 }
-async function VS_SORT_bubblesortV2() {
-    var somethingChanged = true
-    while (somethingChanged) {
-        somethingChanged = false
-        for (let i = 0; i < dataArray.length; i++) {
-            if (dataArray[i] > dataArray[i+1]) {
-                SORT_swap(i,i+1)
-                somethingChanged = true
-
-                document.getElementsByClassName('bar')[i].classList.add('bar_active')
-                await sleep(10*ID_sortspeedslider.value)
-                document.getElementsByClassName('bar')[i].classList.remove('bar_active')
-                ArrayBar();
-            }
-
-            if (!runSort) {
-                break;
-            }
-        }
-    }
-}
-
-function SORT_swap(x,y) {
+async function SORT_swap(x,y) {
     let tmp = dataArray[y]
     dataArray[y] = dataArray[x]
     dataArray[x] = tmp
 }
 
-// Just works in async func called with await
+// Quicksort
+async function VS_SORT_quicksort() {
+    await quickSort(dataArray)
+    ArrayBar()
+}
+async function quickSort(dataArray, start = 0, end = dataArray.length - 1) {
+    if (start < end) {
+        const pivotIndex = await partition(dataArray, start, end);
+        await quickSort(dataArray, start, pivotIndex - 1);
+        await quickSort(dataArray, pivotIndex + 1, end);
+    }
+}
+async function partition(dataArray, start, end) {
+    const pivot = dataArray[end];
+    let i = start - 1;
+
+    for (let j = start; j < end; j++) {
+        if (dataArray[j] <= pivot) {
+            i++;
+
+            // wenn der wert rechts kleiner als der pivot wert ist (pivot ist hier = der letzte wert aus dem dataArray bzw. dem bereich), werden die werte links und rechts getauscht, und der Zeiger links geht eins weiter
+            [dataArray[i], dataArray[j]] = [dataArray[j], dataArray[i]];
+
+            // Visual - rot, wenn zweit werte gerauscht
+            ArrayBar()
+            document.getElementsByClassName('bar')[i].classList.add('bar_active2')
+            document.getElementsByClassName('bar')[j].classList.add('bar_active2')
+            await sleep(10*ID_sortspeedslider.value)
+            document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
+            document.getElementsByClassName('bar')[j].classList.remove('bar_active2')
+
+        }
+        // Visual - blau, wenn nichts passirt und eingach nur eins weitergegangen wird
+        ArrayBar()
+        document.getElementsByClassName('bar')[i + 1].classList.add('bar_active')
+        document.getElementsByClassName('bar')[j + 1].classList.add('bar_active')
+        await sleep(10*ID_sortspeedslider.value)
+        document.getElementsByClassName('bar')[i + 1].classList.remove('bar_active')
+        document.getElementsByClassName('bar')[j + 1].classList.remove('bar_active')
+
+    }
+
+    [dataArray[i + 1], dataArray[end]] = [dataArray[end], dataArray[i + 1]];
+    return i + 1;
+}
+
 function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
