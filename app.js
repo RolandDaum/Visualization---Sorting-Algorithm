@@ -11,7 +11,7 @@ const ID_spanbarnum = document.getElementById('spanbarnum')
 const ID_spanspeed = document.getElementById('spanspeed')
 let runSort = true
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     UI_slider()
     AEL_selectsort()
     AEL_barnumberslider()
@@ -42,11 +42,14 @@ function AEL_barnumberslider() {
             dataArray.push(i+1) 
         }
         ArrayBar()
+        // for (let i = 0; i < 10; i++) {
+        //     ID_shuffelbutton.click()
+        // }
     })
 }
 function AEL_sortspeedslider() {
     ID_sortspeedslider.addEventListener('change', () => {
-        ID_spanspeed.innerHTML = ID_sortspeedslider.value*10
+        ID_spanspeed.innerHTML = ID_sortspeedslider.value
     })
 }
 function AEL_selectsort() {
@@ -55,6 +58,8 @@ function AEL_selectsort() {
         ID_algname.innerHTML = ID_sortselect.value
     })
 }
+
+
 // (drawing) the dataArray into html
 function ArrayBar() {
     ID_barDiv.innerHTML = ''
@@ -88,108 +93,92 @@ function AEL_shuffelArray() {
         ArrayBar()
     })
 }
-
+// Eventlistener for the sort Button
 function AEL_sort() {
     ID_sortbutton.addEventListener('click', () => {
         runSort = true
-        if (ID_sortselect.value === 'Bubblesort') {
-            VS_SORT_bubblesort()
-        }
-        else if (ID_sortselect.value === 'Quicksort') {
-            VS_SORT_quicksort()
+        switch (ID_sortselect.value) {
+            case 'Bubblesort':
+                VS_SORT_bubblesort()
+                break;
+            case 'Quicksort':
+                VS_SORT_quicksort(0,dataArray.length-1)
+                break;
+            case 'Selection Sort':
+                VS_SORT_selectionsort();
+                break;
+            case 'Algorithm':
+                window.alert("please choose a sorting algorythm first");
+                break;
+            case 'TEST':
+                VS_SORT_selectionsortbutwithlisttosaveminvalues();
+                break;
         }
     })
 }
 
-// Bubble Sort
-async function VS_SORT_bubblesort() {
-    var somethingChanged = true
-    while (somethingChanged) {
-        somethingChanged = false
-        for (let i = 0; i < dataArray.length; i++) {
-            if (dataArray[i] > dataArray[i+1]) {
+function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+async function drawArrayMarkBar(BarIndex1, BarIndex2) {
+    ArrayBar()
+    document.getElementsByClassName('bar')[BarIndex1].classList.add('bar_active2')
+    document.getElementsByClassName('bar')[BarIndex2].classList.add('bar_active2')
+    await sleep(ID_sortspeedslider.value)
+    document.getElementsByClassName('bar')[BarIndex1].classList.remove('bar_active2')
+    document.getElementsByClassName('bar')[BarIndex2].classList.remove('bar_active2')
+}
 
-                // Visual - rot, wenn das danach kleiner als das davor ist
-                ArrayBar()
-                document.getElementsByClassName('bar')[i].classList.add('bar_active2')
-                document.getElementsByClassName('bar')[i+1].classList.add('bar_active2')
-                await sleep(10*ID_sortspeedslider.value)
-                document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
-                document.getElementsByClassName('bar')[i+1].classList.remove('bar_active2')
-
-                SORT_swap(i,i+1)
-                somethingChanged = true
-
-                // Visual, wenn fertig getauscht wurde
-                ArrayBar()
-                document.getElementsByClassName('bar')[i].classList.add('bar_active2')
-                document.getElementsByClassName('bar')[i+1].classList.add('bar_active2')
-                await sleep(10*ID_sortspeedslider.value)
-                document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
-                document.getElementsByClassName('bar')[i+1].classList.remove('bar_active2')
+async function VS_SORT_selectionsort() {
+    let leftIndex = 0;
+    let nIndex = dataArray.length-1;
+    while (leftIndex <= nIndex) {
+        let minIndex = leftIndex;
+        for (let i = leftIndex; i <= nIndex; i++) {
+            if (!runSort) {return;}
+            await drawArrayMarkBar(minIndex, i)
+            if (dataArray[i] < dataArray[minIndex]) {
+                minIndex = i;
             }
-            if (!runSort) {
-                break;
-            }
-
-            // Visual - blau für jeden normalen schritt
-            ArrayBar();
-            document.getElementsByClassName('bar')[i].classList.add('bar_active')
-            await sleep(10*ID_sortspeedslider.value)
-            document.getElementsByClassName('bar')[i].classList.remove('bar_active')
         }
+        let minVal = dataArray[minIndex];
+        let leftVal = dataArray[leftIndex];
+        dataArray[minIndex] = leftVal;
+        dataArray[leftIndex] = minVal;
+        leftIndex++;
     }
-}
-async function SORT_swap(x,y) {
-    let tmp = dataArray[y]
-    dataArray[y] = dataArray[x]
-    dataArray[x] = tmp
-}
-
-// Quicksort
-async function VS_SORT_quicksort() {
-    await quickSort(dataArray)
     ArrayBar()
 }
-async function quickSort(dataArray, start = 0, end = dataArray.length - 1) {
-    if (start < end) {
-        const pivotIndex = await partition(dataArray, start, end);
-        await quickSort(dataArray, start, pivotIndex - 1);
-        await quickSort(dataArray, pivotIndex + 1, end);
-    }
-}
-async function partition(dataArray, start, end) {
-    const pivot = dataArray[end];
-    let i = start - 1;
-
-    for (let j = start; j < end; j++) {
-        if (dataArray[j] <= pivot) {
-            i++;
-
-            // wenn der wert rechts kleiner als der pivot wert ist (pivot ist hier = der letzte wert aus dem dataArray bzw. dem bereich), werden die werte links und rechts getauscht, und der Zeiger links geht eins weiter
-            [dataArray[i], dataArray[j]] = [dataArray[j], dataArray[i]];
-
-            // Visual - rot, wenn zweit werte gerauscht
-            ArrayBar()
-            document.getElementsByClassName('bar')[i].classList.add('bar_active2')
-            document.getElementsByClassName('bar')[j].classList.add('bar_active2')
-            await sleep(10*ID_sortspeedslider.value)
-            document.getElementsByClassName('bar')[i].classList.remove('bar_active2')
-            document.getElementsByClassName('bar')[j].classList.remove('bar_active2')
-
+async function VS_SORT_bubblesort() {
+    let nIndex = dataArray.length-1;
+    while (nIndex > 0) {
+        for (let i = 0; i < nIndex; i++) {
+            if (!runSort) {return;}
+            if (dataArray[i] > dataArray[i+1]) {
+                await drawArrayMarkBar(i, i+1)
+                let iVal = dataArray[i];
+                let iiVal = dataArray[i+1];
+                dataArray[i] = iiVal;
+                dataArray[i+1] = iVal;
+            }
         }
-        // Visual - blau, wenn nichts passirt und eingach nur eins weitergegangen wird
-        ArrayBar()
-        document.getElementsByClassName('bar')[i + 1].classList.add('bar_active')
-        document.getElementsByClassName('bar')[j + 1].classList.add('bar_active')
-        await sleep(10*ID_sortspeedslider.value)
-        document.getElementsByClassName('bar')[i + 1].classList.remove('bar_active')
-        document.getElementsByClassName('bar')[j + 1].classList.remove('bar_active')
-
+        nIndex--;
     }
-
-    [dataArray[i + 1], dataArray[end]] = [dataArray[end], dataArray[i + 1]];
-    return i + 1;
+    ArrayBar();
 }
-
-function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+async function VS_SORT_quicksort(left, right) {
+    if (left >= right) {return;}
+    let pivotVal = dataArray[right];
+    let pushCount = 0;
+    for (let i = left; i < right-pushCount; i++) {
+        if (!runSort) {return;}
+        await drawArrayMarkBar(i, right-pushCount)
+        if (dataArray[i] > pivotVal) {
+            dataArray.splice(right+1, 0, dataArray[i])
+            dataArray.splice(i, 1);
+            pushCount++;
+            i--;
+        }
+    }
+    let middle = right-pushCount-1;
+    await VS_SORT_quicksort(left, middle);
+    await VS_SORT_quicksort(middle+1, right);
+}
