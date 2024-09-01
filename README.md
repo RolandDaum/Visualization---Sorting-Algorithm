@@ -1,5 +1,5 @@
 # [Visualization-Sorting-Algorithm](https://rolanddaum.github.io/Visualization-Sorting-Algorithm/)
-A simple visualization of an JS sorting algorythm made with HTML CSS and JS.
+A simple visualization of JS sorting algorithms made with HTML, CSS and JS.
 Click [here](https://rolanddaum.github.io/Visualization-Sorting-Algorithm/) to check it out
 URL: visualsortingalgo.ddns.net
 
